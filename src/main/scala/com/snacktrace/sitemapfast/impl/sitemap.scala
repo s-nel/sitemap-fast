@@ -35,14 +35,11 @@ object sitemap {
 
   def generate
     (urlsPerSitemap: Int = 50000, sitemapsPerSitemapIndex: Int = 50000, bufferSize: Int = 4096,
-      logger: Logger = LoggerFactory.getLogger(getClass), maxOpen: Int = 10,
+      logger: Logger = LoggerFactory.getLogger(getClass),
       tmpFilePath: Path = Paths.get("/tmp/"), dateFormat: String = "yyyy-MM-dd'T'HH:mm:ssX",
-      prettyPrinter: PrettyPrinter = new PrettyPrinter(120, 2))(urls: Stream[Task, List[Url]])
+      prettyPrinter: PrettyPrinter = new PrettyPrinter(120, 2))(urls: Stream[Task, Url])
     (implicit strategy: Strategy): Task[Unit] = {
     urls
-      .flatMap { list =>
-        Stream.emits(list)
-      }
       .chunkN(urlsPerSitemap)
       .zipWithIndex
       .map { tup =>
